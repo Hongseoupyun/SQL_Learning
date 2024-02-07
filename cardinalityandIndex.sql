@@ -51,9 +51,9 @@ USE INDEX (idx_location_first)
 WHERE id = '0'
 AND name = 'lee'
 AND location = 'seoul';
+/*
 The third line uses the "USE INDEX" keyword, which, if not used, would allow the optimizer to automatically select an index. This query explicitly specifies an index for testing both idx_location_first and idx_id_first indexes using the USE INDEX keyword.
 
-/*
 Testing with the relatively lower cardinality idx_location_first index first, it prioritizes indexing the location column. Although the query specifies id, name, location in the WHERE clause, because indexing prioritizes the location column, it first filters for values where location is 'seoul', leaving 8 matching records (see the table for why 8 records remain).
 
 Next, it filters for data where the name is 'lee', checking only among the remaining 8 records and leaving 3 matching records. Finally, it searches among the remaining 3 records for the one with id '0'.
@@ -66,4 +66,11 @@ FROM users
 USE INDEX (idx_id_first)
 WHERE id = '0'
 AND name = 'lee'
-AND location = '
+AND location = 'seoul';
+
+/*
+In the case of the idx_id_first index, the id column is indexed first. This means that the index filters out the value where id = '0' from the start, leaving only one data record after the first search. Next, it checks this single remaining data record to see if the name = 'lee'. Lastly, it also checks this one remaining data record to confirm if the location = 'seoul'.
+
+While the number of data records in this example may be small and the difference in performance may not be perceptible, indexing thousands, tens of thousands, or even millions of data records can result in a significant performance difference. Therefore, when selecting indexing columns, considering cardinality is an important factor.
+
+*/
