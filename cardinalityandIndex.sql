@@ -36,8 +36,10 @@ Let's apply indexes to the users table:
 
 CREATE INDEX idx_location_first ON users(location, name, id);
 CREATE INDEX idx_id_first ON users(id, name, location);
-Two indexes have been created for the example table: idx_location_first and idx_id_first. Both indexes use all three columns as index columns.
+
 /*
+Two indexes have been created for the example table: idx_location_first and idx_id_first. Both indexes use all three columns as index columns.
+
 The former index uses the location column as the first index column, as the name suggests, while the latter uses the id column as the first. In other words, the former indexed a column with low cardinality (high duplication) first, and the latter indexed a column with high cardinality (low duplication) first.
 
 What difference does simply changing the order of indexing columns make in practice? Let's understand this through the following query:
@@ -50,6 +52,7 @@ WHERE id = '0'
 AND name = 'lee'
 AND location = 'seoul';
 The third line uses the "USE INDEX" keyword, which, if not used, would allow the optimizer to automatically select an index. This query explicitly specifies an index for testing both idx_location_first and idx_id_first indexes using the USE INDEX keyword.
+
 /*
 Testing with the relatively lower cardinality idx_location_first index first, it prioritizes indexing the location column. Although the query specifies id, name, location in the WHERE clause, because indexing prioritizes the location column, it first filters for values where location is 'seoul', leaving 8 matching records (see the table for why 8 records remain).
 
